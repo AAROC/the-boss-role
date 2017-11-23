@@ -6,8 +6,8 @@ services:
 before_install:
   - sudo apt-get -qq update
 install:
-  - pip install molecule
-  - pip install docker
+  - sudo pip install molecule
+  - sudo pip install docker
 script:
   - molecule destroy
   - molecule dependency
