@@ -46,9 +46,9 @@ python_pips:
 # hubot_env:                  Environment variables for Hubot adapters
 #############################################################################
 
-hubot_admin: ansible
+hubot_admin: drillbot
 
-hubot_adapter: drillot
+hubot_adapter: slack
 
 hubot_node_version: 6.9.1
 
