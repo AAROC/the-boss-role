@@ -1,0 +1,115 @@
+---
+- name: Hubot home
+  file: 
+    path: "{{ hubot_dir }}" 
+    state: directory 
+    owner: "{{ hubot_admin }}"
+
+- name: Install hubot global dependencies
+  become: True
+  become_user: "{{ hubot_admin }}"
+  shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && npm i -g {{ item }}"
+  args:
+    executable: /bin/bash
+  with_items: "{{ hubot_global_node_packages }}"
+  tags:
+    - node_packages
+
+
+- name: Assemble Hubot
+  become: True
+  become_user: "{{ hubot_admin }}"
+  shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && echo 'n' | yo hubot --adapter={{ hubot_adapter }} --owner={{ hubot_owner }} --name={{ hubot_identity }} --description={{ hubot_description }} --defaults chdir={{ hubot_dir }}"
+  args:
+    executable: /bin/bash
+  changed_when: False
+- name: Install hubot Node dependencies
+  become: True
+  become_user: "{{ hubot_admin }}"
+  shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && npm i -g {{ item }}"
+  args:
+    executable: /bin/bash
+  with_items: "{{ hubot_node_packages }}"
+  tags:
+    - node_packages
+
+- name: Define Hubot environment
+  become: True
+  become_user: "{{ hubot_admin }}"
+  template:
+    src: hubot.env.j2
+    dest: "{{ hubot_dir }}/{{ hubot_identity }}.env"
+  tags:
+    - hubot_environment
+  notify:
+    - restart hubot
+
+- name: Install Hubot start script
+  become: True
+  become_user: "{{ hubot_admin }}"
+  template:
+    src: start-hubot.sh.j2
+    dest: "{{ hubot_dir }}/bin/start-hubot"
+    mode: "0744"
+
+- name: Install custom Hubot scripts
+  become: False
+  copy:
+    src: "scripts/{{ item }}"
+    dest: "{{ hubot_dir }}/scripts/{{ item }}"
+    owner: "{{ hubot_admin }}"
+    mode: "0644"
+  with_items: "{{ hubot_custom_scripts }}"
+  when: hubot_custom_scripts is defined
+  notify:
+    - restart hubot
+  tags:
+    - hubot_scripts
+
+- name: Install hubot external git scripts
+  become: False
+  git: 
+    repo: "{{ item.repo_url }}" 
+    version: "{{ item.version | default('master') }}"
+    dest: "{{ hubot_dir }}/node_modules/{{ item.name }}"
+  with_items: "{{ hubot_external_git_scripts }}"
+  when: hubot_external_git_scripts is defined
+  notify:
+    - restart hubot
+  tags:
+    - hubot_scripts
+
+- name: Configure Hubot external scripts
+  become: True
+  become_user: root
+  template:
+    src: external-scripts.json.j2
+    dest: "{{ hubot_dir }}/external-scripts.json"
+    owner: "{{ hubot_admin }}"
+    group: "{{ hubot_admin }}"
+    mode: "0644"
+  when: hubot_external_scripts is defined
+  notify:
+    - restart hubot
+  tags: hubot_scripts
+
+- name: Hubot log directory
+  file:
+    path: "{{ hubot_dir }}/log"
+    state: directory
+    owner: "{{ hubot_admin }}"
+    group: "{{ hubot_admin }}"
+  tags:
+    - hubot_environment
+
+- name: Hubot home ownership
+  become: True
+  become_user: root
+  file:
+    path: "{{ item }}"
+    owner: "{{ hubot_admin }}"
+    group: "{{ hubot_admin }}"
+    recurse: "yes"
+  with_items: "{{ hubot_all_dirs }}"
+  tags:
+    - hubot_environment
