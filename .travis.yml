@@ -1,0 +1,32 @@
+python:
+  - '2.7'
+sudo: required
+services:
+  - docker
+before_install:
+  - sudo apt-get -qq update
+install:
+  - pip install molecule
+  - pip install docker
+script:
+  - molecule destroy
+  - molecule dependency
+  - molecule syntax
+  - molecule create
+  - molecule converge
+  - molecule idempotence
+# not you  - molecule lint
+  - molecule side-effect
+  - molecule verify
+  - molecule  destroy
+
+notifications:
+  slack:
+    on_success: change    # default: always
+    on_failure: always    # default: always
+    on_pull_requests: true
+    template:
+      - "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
+    rooms:
+      - secure: urFzWfQmyfYLZukVZvuGi8ZjmqtiiUSYSBYVU0LlRL722t6Dx4KI8xDyHTkKdetjIJcXqIVJcd452LgEFlLOnbC0UDcGelVdPoKKdL8S5ypfGb3tzAwBiMeL19Ejn3WX7ibEaWpuLP6B5av5dTeb8vQiD72WC4HZHXmGrgSUcxaC5LhNKh/aLABibSBWkfyACwKBRk9Vxq53ys/OoY/KiJiqp+79pZj6UloLTrukKEUqEJf7F79e6+kLo0wj4Fe6NVgxFhjyvPMCWUysNRkRpA595MTfnEXM/snle+yqiDPzou0PZ/0XQFgYOFsaxRViqHTXZ9t07unfCZrrJeGurwfTmY/aIPnja0i6aQLdECJ4Es6/NzcGL+8t4egI/rmEde4IZnX9LgWyJpHH1YFsVR8HRBjl7Tbbjv6ELqctzUJ3GTd/5pC3Z7aKTEW6qSVZwppQTjuq4rt+gTmwsDBd3a7GlvD4VUj0/m19+LC984FJwSFe0tn9SMMQz+TrxYZV9eJQZ6L0Pb62e7OV8BFE5/5otMFfft4wFkPwzW6jmvnCM5ybENuyWuDjDLXGZqECJ156ReoDfCGQm3ISiP4Y2fSF6ohneLSj8rs/oAo4ii0BRzfYKWp3G3hztLwK1281uRiGIMOwaCaQ/BcquAp22fvNrytVUvdtTekd7zWH2js=
+
