@@ -1,1 +1,3 @@
+# Ignore all the molecule temp files
 molecule/default/.molecule
+molecule/default/tests/__pycache__/
