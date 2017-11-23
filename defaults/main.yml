@@ -1,6 +1,36 @@
 ---
 # File: defaults/main.yml - Ansible Hubot default variables
 
+#  System prerequisites
+system_prerequisites:
+  RedHat:
+    - '@Development tools'
+    - curl
+    - git
+    - libicu-devel
+    - libselinux-python
+    - openssl-devel
+    - expat-devel
+    - redis
+    - vim
+    - python-pip
+    - python-devel
+  Debian:
+    - build-essential
+    - curl
+    - expat
+    - git
+    - libicu-dev
+    - openssl
+    - libssl-dev
+    - libffi-dev
+    - redis-server
+    - python-dev
+    - python-pip
+    - virtualenv
+    - vim
+python_pips:
+  - ansible
 #############################################################################
 #
 # hubot_admin:                User account that will run the bot; for
@@ -34,6 +64,8 @@ hubot_global_node_packages:
   - coffee-script
   - yo
   - generator-hubot
+  - jsdom
+  - scraper
 
 hubot_all_dirs:
   - "{{ hubot_dir }}"
