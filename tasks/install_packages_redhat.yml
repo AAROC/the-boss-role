@@ -29,8 +29,8 @@
 
 - name: Install RedHat packages
   become: true
-  package: 
-    name: "{{ item }}" 
+  package:
+    name: "{{ item }}"
     state: present
   with_items: "{{ system_prerequisites[ansible_os_family]}}"
 - set_fact:

@@ -8,8 +8,8 @@ lint:
 platforms:
   - name: centos7
     image: centos:7
-  # - name: debian
-  #   image: debian:jessie
+    # - name: debian
+    #   image: debian:jessie
 provisioner:
   name: ansible
   lint:
