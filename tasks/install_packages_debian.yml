@@ -1,5 +1,12 @@
 ---
 # File: tasks/install_packages_Debian.yml - OS packages for Debian
+- name: "Ensure that {{ hubot_admin }} is present"
+  become: true
+  user:
+    name: "{{ hubot_admin }}"
+    createhome: true
+    state: present
+  
 
 - name: Install Debian packages
   become: True
@@ -18,3 +25,24 @@
 
 - set_fact:
     redis_server: redis-server
+
+- name: Install Node Version Manager
+  become: True
+  become_user: "{{ hubot_admin }}"
+  git:
+    repo: https://github.com/creationix/nvm.git
+    dest: "{{ hubot_nvm_dir }}"
+    accept_hostkey: True
+  tags:
+    - node_nvm
+
+- name: Install Node.js
+  become: True
+  become_user: "{{ hubot_admin }}"
+  shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm install {{ hubot_node_version }}"
+  args:
+    creates: "{{ hubot_node_dir }}"
+    executable: /bin/bash
+  changed_when: False
+  tags:
+    - node_packages
