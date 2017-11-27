@@ -1,5 +1,11 @@
 ---
 # tasks file for the-boss-role/
 - include: "install_packages_{{ ansible_os_family | lower }}.yml"
+  tags: install
 - include: hubot-config.yml
   become: true
+  become_user: "{{ hubot_admin }}"
+  tags: config
+- include: "service-config.yml"
+  when: ansible_virtualization_type != 'docker'
+  tags: service

@@ -133,14 +133,14 @@ hubot_external_scripts:
   - clark
   - htmlparser
   - hubot-calculator
-  - hubot-{{ hubot_adapter }}
-  - hubot-youtube
-  - lodash
-  - moment
-  - nodepie
-  - soupselect
-  - textspark
-  - jsdom
+  # - hubot-{{ hubot_adapter }}
+  # - hubot-youtube
+  # - lodash
+  # - moment
+  # - nodepie
+  # - soupselect
+  # - textspark
+  # - jsdom
 
 #############################################################################
 #

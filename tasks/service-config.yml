@@ -1,0 +1,19 @@
+---
+- name: Start Redis
+  become: True
+  become_user: root
+  service:
+    name: "{{ redis_server }}"
+    state: started
+
+- name: Install service init script
+  become: True
+  become_user: root
+  template:
+    src: hubot.init.j2
+    dest: /etc/init.d/hubot
+    mode: "0755"
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version < "7")
+  notify:
+    - enable hubot
+    - restart hubot
