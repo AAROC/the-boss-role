@@ -1,8 +1,8 @@
 ---
 - name: Hubot home
-  file: 
-    path: "{{ hubot_dir }}" 
-    state: directory 
+  file:
+    path: "{{ hubot_dir }}"
+    state: directory
     owner: "{{ hubot_admin }}"
 
 - name: Hubot log directory
@@ -14,8 +14,6 @@
   tags:
     - hubot_environment
 
-# Should add a task to get all the installed packages
-
 - name: Install hubot global dependencies
   become: True
   become_user: "{{ hubot_admin }}"
@@ -23,6 +21,7 @@
   args:
     executable: "/bin/bash"
     chdir: "{{hubot_dir}}"
+    creates: "{{ hubot_dir }}/node_modules/{{ item }}/package.json"
   with_items: "{{ hubot_global_node_packages }}"
   tags:
     - node_packages
@@ -32,8 +31,7 @@
   become_user: "{{ hubot_admin }}"
   shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && echo 'n' | yo hubot --adapter={{ hubot_adapter }} --owner={{ hubot_owner }} --name={{ hubot_identity }} --description={{ hubot_description }} --defaults chdir={{ hubot_dir }}"
   args:
-    executable: "/bin/bash"
-    chdir: "{{ hubot_dir}}"
+    executable: /bin/bash
   changed_when: False
 
 - name: Define Hubot environment
@@ -58,17 +56,18 @@
 - name: Install Hubot external scripts
   become: True
   become_user: "{{ hubot_admin }}"
-  shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && npm i --save {{ item }}"
+  shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && npm i -g --save {{ item }}"
   args:
     executable: "/bin/bash"
-    chdir: "{{ hubot_dir }}"
+    chdir: "{{hubot_dir}}"
+    creates: "{{ hubot_dir }}/node_modules/{{ item }}/package.json"
   with_items: "{{ hubot_external_scripts }}"
   tags:
     - node_packages
 
 - name: Configure Hubot external scripts
   become: True
-  become_user: root
+  become_user: "{{ hubot_admin }}"
   template:
     src: external-scripts.json.j2
     dest: "{{ hubot_dir }}/external-scripts.json"
@@ -79,7 +78,6 @@
   notify:
     - restart hubot
   tags: hubot_scripts
-
 
 - name: Install custom Hubot scripts
   become: False
@@ -97,8 +95,8 @@
 
 - name: Install hubot external git scripts
   become: False
-  git: 
-    repo: "{{ item.repo_url }}" 
+  git:
+    repo: "{{ item.repo_url }}"
     version: "{{ item.version | default('master') }}"
     dest: "{{ hubot_dir }}/node_modules/{{ item.name }}"
   with_items: "{{ hubot_external_git_scripts }}"

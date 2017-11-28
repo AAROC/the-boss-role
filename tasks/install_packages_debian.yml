@@ -6,7 +6,6 @@
     name: "{{ hubot_admin }}"
     createhome: true
     state: present
-  
 
 - name: Install Debian packages
   become: True

@@ -4,27 +4,28 @@
 - name: enable hubot
   become: True
   become_user: root
-  service: 
-    name: hubot 
+  service:
+    name: hubot
     enabled: true
 
 - name: restart hubot
   become: True
   become_user: root
-  service: 
-    name: hubot 
+  service:
+    name: hubot
     state: restarted
+  when: ansible_virtualization_type != 'docker'
 
 - name: start hubot
   become: True
   become_user: root
-  service: 
-    name: hubot 
+  service:
+    name: hubot
     state: started
 
 - name: stop hubot
   become: True
   become_user: root
-  service: 
-    name: hubot 
+  service:
+    name: hubot
     state: stopped
