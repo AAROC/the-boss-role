@@ -1,1 +1,4 @@
 ansible
+docker-py
+testinfra
+molecule
