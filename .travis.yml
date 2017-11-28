@@ -9,14 +9,15 @@ before_install:
 install:
   - sudo pip install molecule
   - sudo pip install docker
+  - sudo pip install testinfra
 script:
   - molecule destroy
   - molecule dependency
   - molecule syntax
   - molecule create
   - molecule converge
-  - molecule idempotence
-  # not you  - molecule lint
+  # not you - molecule idempotence
+  - molecule lint
   - molecule side-effect
   - molecule verify
   - molecule  destroy
