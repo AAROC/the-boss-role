@@ -7,9 +7,9 @@ services:
 before_install:
   - sudo apt-get -qq update
 install:
-  - sudo pip install molecule
-  - sudo pip install docker
-  - sudo pip install testinfra
+  - sudo -H pip install -U molecule
+  - sudo -H pip install -U docker
+  - sudo -H pip install -U testinfra
 script:
   - molecule destroy
   - molecule dependency
