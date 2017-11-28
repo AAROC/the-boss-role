@@ -17,3 +17,4 @@
   notify:
     - enable hubot
     - restart hubot
+

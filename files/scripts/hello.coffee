@@ -15,16 +15,21 @@ hellos = [
     "Hey %, Hello!",
     "Marnin', %",
     "Good day, %",
-    "Good 'aye!, %"
+    "Good 'aye!, %",
+    "Hi %",
+    ":wave: %"
 ]
 mornings = [
     "Good morning, %",
     "Good morning to you too, %",
     "Good day, %",
-    "Good 'aye!, %"
+    "Good 'aye!, %",
+    "Mornin %",
+    "Yo %",
+    "%, whassup!"
 ]
 module.exports = (robot) ->
-    robot.hear /(hello|good( [d'])?ay(e)?)/i, (msg) ->
+    robot.hear /(hello|good( [d'])?ay(e)?)|[H,h]i/i, (msg) ->
         hello = msg.random hellos
         msg.send hello.replace "%", msg.message.user.name
 

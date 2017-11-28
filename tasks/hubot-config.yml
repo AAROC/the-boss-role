@@ -106,6 +106,17 @@
   tags:
     - hubot_scripts
 
+- name: debug fileglob
+  debug:
+    msg: "{{ item | basename }}"
+  with_fileglob: "scripts/*.coffee"
+
+- name: Push scripts
+  copy:
+    src: "scripts/{{ item | basename }}"
+    dest: "{{ hubot_dir }}/scripts/{{ item | basename }}"
+  with_fileglob: "scripts/*.coffee"
+
 - name: Hubot home ownership
   become: True
   become_user: root
