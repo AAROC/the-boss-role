@@ -21,7 +21,7 @@
   become_user: "{{ hubot_admin }}"
   shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && npm i -g --save {{ item }}"
   args:
-    executable: /bin/bash
+    executable: "/bin/bash"
     chdir: "{{hubot_dir}}"
   with_items: "{{ hubot_global_node_packages }}"
   tags:
@@ -32,7 +32,7 @@
   become_user: "{{ hubot_admin }}"
   shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && echo 'n' | yo hubot --adapter={{ hubot_adapter }} --owner={{ hubot_owner }} --name={{ hubot_identity }} --description={{ hubot_description }} --defaults chdir={{ hubot_dir }}"
   args:
-    executable: /bin/bash
+    executable: "/bin/bash"
     chdir: "{{ hubot_dir}}"
   changed_when: False
 
@@ -55,14 +55,12 @@
     dest: "{{ hubot_dir }}/bin/start-hubot"
     mode: "0744"
 
-
-
 - name: Install Hubot external scripts
   become: True
   become_user: "{{ hubot_admin }}"
   shell: "source {{ hubot_nvm_dir }}/nvm.sh && nvm use {{ hubot_node_version }} && npm i --save {{ item }}"
   args:
-    executable: /bin/bash"
+    executable: "/bin/bash"
     chdir: "{{ hubot_dir }}"
   with_items: "{{ hubot_external_scripts }}"
   tags:
